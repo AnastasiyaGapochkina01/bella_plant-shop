@@ -1,0 +1,38 @@
+---
+# tasks file for setup-mariadb
+- name: Get mariadb setup script
+  ansible.builtin.get_url:
+    url: https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
+    dest: /tmp/mariadb_repo_setup
+    mode: '0755'
+
+- name: Setup mariadb repo
+  ansible.builtin.command: "bash /tmp/mariadb_repo_setup --mariadb-server-version={{ version }}"
+  args:
+    creates: /etc/apt/sources.list.d/mariadb.list
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install mariadb-server and mariadb-client packages
+  ansible.builtin.apt:
+    name:
+      - mariadb-server
+      - mariadb-client
+      - unzip
+    state: present
+
+- name: Copy sql scripts
+  ansible.builtin.copy:
+    src: init.sql
+    dest: /tmp/init.sql
+
+- name: Run init DB
+  ansible.builtin.shell: mysql < /tmp/init.sql
+
+- name: Ensure MariaDB service is started and enabled
+  ansible.builtin.systemd_service:
+    name: mariadb
+    state: started
+    enabled: yes

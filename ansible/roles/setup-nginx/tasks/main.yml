@@ -1,0 +1,33 @@
+---
+# tasks file for setup-nginx
+- name: Add local record to localhost
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "127.0.0.1 {{ ansible_ssh_host }} {{ m2_url }}"
+    create: yes
+
+- name: Install nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: latest
+  
+- name: Copy vhost file
+  ansible.builtin.template:
+    src: m2.conf.j2
+    dest: "{{ nginx_conf_dir }}/m2.conf"
+
+- name: Remove default conf
+  ansible.builtin.file:
+    path: "{{ nginx_enabled_dir }}/default"
+    state: absent
+
+- name: Enable vhost
+  ansible.builtin.file:
+    src: "{{ nginx_conf_dir }}/m2.conf"
+    dest: "{{ nginx_enabled_dir }}/m2.conf"
+    state: link
+
+- name: Reload nginx
+  ansible.builtin.systemd_service:
+    name: nginx
+    state: reloaded

@@ -1,0 +1,14 @@
+cluster.name: magento
+
+node.name: plantshop-os
+path.data: /var/lib/opensearch
+path.logs: /var/log/opensearch
+
+network.host: 0.0.0.0
+
+http.port: 9200
+
+discovery.seed_hosts: ["127.0.0.1"]
+
+plugins.security.disabled: true
+node.max_local_storage_nodes: 3

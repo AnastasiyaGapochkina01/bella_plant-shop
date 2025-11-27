@@ -1,0 +1,11 @@
+upstream fastcgi_backend {
+  server  {{ php_listen }};
+}
+
+server {
+
+  listen 80;
+  server_name {{ m2_url }};
+  set $MAGE_ROOT {{ prj_dir }};
+  include {{ prj_dir }}/nginx.conf.sample;
+}

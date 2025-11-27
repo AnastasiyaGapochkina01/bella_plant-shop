@@ -1,0 +1,7 @@
+---
+# vars file for setup-nginx
+prj_dir: /var/www/plant-shop
+nginx_conf_dir: /etc/nginx/sites-available
+nginx_enabled_dir: /etc/nginx/sites-enabled
+php_listen: unix:/run/php/php8.3-fpm.sock
+m2_url: magento2.local

@@ -1,0 +1,6 @@
+---
+# vars file for setup-m2-theme
+prj_dir: /var/www/plant-shop
+m2_url: http://127.0.0.1
+theme_url: "https://d39kc01zfxgus5.cloudfront.net/2021/08/theme-30074.zip"
+theme_zip: "/tmp/theme-30074.zip"

@@ -1,0 +1,3 @@
+---
+# vars file for setup-mariadb
+version: 11.4

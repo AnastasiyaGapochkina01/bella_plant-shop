@@ -1,0 +1,37 @@
+---
+# tasks file for setup-nginx-and-php
+- name: Install php
+  ansible.builtin.apt:
+    name: "php{{ php_version }}-{{ item }}"
+    state: present
+    update_cache: yes
+  loop: "{{ php_packages }}"
+
+- name: Remove apache2
+  ansible.builtin.apt:
+    name: apache2
+    autoremove: yes
+    state: absent
+
+- name: Install composer
+  ansible.builtin.get_url:
+    url: https://getcomposer.org/download/latest-stable/composer.phar
+    dest: /usr/local/bin/composer.phar
+
+- name: Symlink composer.phar
+  ansible.builtin.copy:
+    src: /usr/local/bin/composer.phar
+    dest: /usr/local/bin/composer
+    mode: 0755
+    remote_src: yes
+
+- name: Configure php-fpm settings
+  ansible.builtin.copy:
+    src: php.ini
+    dest: "/etc/php/{{ php_version }}/fpm/php.ini"
+
+- name: Restart fpm
+  ansible.builtin.systemd_service:
+    name: "php{{ php_version }}-fpm"
+    state: restarted
+

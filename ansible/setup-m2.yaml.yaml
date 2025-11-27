@@ -1,0 +1,11 @@
+- name: Install M2
+  hosts: all
+  become: yes
+  roles:
+     - setup-mariadb
+     - setup-php
+     - setup-opensearch
+     - init-magento2
+     - setup-nginx
+     - setup-magento2
+     - setup-m2-theme

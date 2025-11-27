@@ -1,0 +1,20 @@
+---
+# vars file for setup-nginx-and-php
+php_version: 8.3
+php_packages:
+  - fpm
+  - common
+  - gmp
+  - curl
+  - soap
+  - bcmath
+  - intl
+  - mbstring
+  - xmlrpc
+  - mysql
+  - gd
+  - xml
+  - cli
+  - zip
+
+php_listen: unix:/run/php/php8.3-fpm.sock

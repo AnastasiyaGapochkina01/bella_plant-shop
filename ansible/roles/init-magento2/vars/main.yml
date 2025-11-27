@@ -1,0 +1,6 @@
+---
+# vars file for setup-m2
+prj_name: plant-shop
+access_key: ""
+secret_key: ""
+creds_path: /var/www/.config/composer/auth.json

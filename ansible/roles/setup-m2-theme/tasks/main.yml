@@ -1,0 +1,69 @@
+---
+# tasks file for setup-m2-theme
+- name: Get theme archive
+  ansible.builtin.get_url:
+    url: "{{ theme_url }}"
+    dest: "{{ theme_zip }}"
+    mode: '0644'
+
+- name: Unzip theme
+  ansible.builtin.unarchive:
+    src: "{{ theme_zip }}"
+    dest: /tmp
+    remote_src: true
+
+- name: Sync to m2 project
+  ansible.builtin.synchronize:
+    src: "/tmp/app/"
+    dest: "{{ prj_dir }}/app/"
+  delegate_to: magento2.dev
+
+- name: Set ownership for project
+  ansible.builtin.file:
+    path: "{{ prj_dir }}"
+    owner: www-data
+    group: www-data
+    recurse: true
+
+- name: Install composer dependency as www-data
+  become_user: www-data
+  become: true
+  command: composer require laminas/laminas-serializer
+  args:
+    chdir: "{{ prj_dir }}"
+
+- name: Replace Zend_Json to Laminas
+  become_user: www-data
+  become: true
+  ansible.builtin.replace:
+    path: "{{ prj_dir }}/app/design/frontend/theme-30074/theme-30074/Magento_Checkout/templates/cart/minicart.phtml"
+    regexp: 'Zend_Json'
+    replace: 'Laminas\\Json\\Json'
+    backup: yes
+
+- name: Run Magento setup:upgrade
+  become_user: www-data
+  become: true
+  ansible.builtin.command: php bin/magento setup:upgrade
+  args:
+    chdir: "{{ prj_dir }}"
+  register: magento_upgrade
+  changed_when: magento_upgrade.rc == 0
+
+- name: Run Magento static content deploy
+  become_user: www-data
+  become: true
+  ansible.builtin.command: php bin/magento setup:static-content:deploy -f
+  args:
+    chdir: "{{ prj_dir }}"
+  register: static_deploy
+  changed_when: static_deploy.rc == 0
+
+- name: Clean Magento cache
+  become_user: www-data
+  become: true
+  ansible.builtin.command: php bin/magento cache:clean
+  args:
+    chdir: "{{ prj_dir }}"
+  register: cache_clean
+  changed_when: cache_clean.rc == 0

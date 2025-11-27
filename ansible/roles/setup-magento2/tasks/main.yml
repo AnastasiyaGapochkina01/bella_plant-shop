@@ -1,0 +1,51 @@
+---
+# tasks file for create-project
+- name: Create app
+  become: true
+  become_user: www-data
+  ansible.builtin.command:
+    chdir: "{{ prj_dir }}"
+    argv:
+      - php
+      - bin/magento
+      - setup:install
+      - --base-url=http://{{ ansible_ssh_host }}
+      - --db-host=localhost
+      - --db-name=magento
+      - --db-user=magento
+      - --db-password=password
+      - --admin-firstname=Admin
+      - --admin-lastname=User
+      - --admin-email=admin@example.com
+      - --admin-user=adminuser
+      - --admin-password=admin123
+      - --language=en_US
+      - --currency=USD
+      - --timezone=America/New_York
+      - --use-rewrites=1
+
+- name: Disable MFA
+  become: true
+  become_user: www-data
+  ansible.builtin.command:
+    chdir: "{{ prj_dir }}"
+    argv:
+      - php
+      - bin/magento
+      - module:disable Magento_TwoFactorAuth Magento_AdminAdobeImsTwoFactorAuth
+
+- name: Get admin url
+  become: true
+  become_user: www-data
+  ansible.builtin.command:
+    chdir: "{{ prj_dir }}"
+    argv:
+      - php
+      - bin/magento
+      - info:adminuri
+  register: admin_url
+
+- name: Print admin url
+  ansible.builtin.debug:
+    msg: "{{ admin_url.stdout_lines }}"
+

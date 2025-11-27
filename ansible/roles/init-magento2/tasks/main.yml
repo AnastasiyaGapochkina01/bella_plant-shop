@@ -1,0 +1,32 @@
+---
+# tasks file for setup-m2
+- name: Install acl for become
+  ansible.builtin.apt:
+    name: acl
+    state: present
+
+- name: Create /var/www/* if not exists
+  ansible.builtin.file:
+    path: /var/www/.config/composer
+    state: directory
+    recurse: yes
+    mode: 0755
+    owner: www-data
+    group: www-data
+
+- name: Set www-data shell
+  ansible.builtin.user:
+    name: www-data
+    shell: /bin/bash
+
+
+- name: Set creds for m2
+  ansible.builtin.template:
+    src: auth.json.j2
+    dest: "{{ creds_path }}"
+  
+- name: Init m2 project
+  become: true
+  become_user: www-data
+  ansible.builtin.shell: /usr/local/bin/composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition "/var/www/{{ prj_name }}"
+
