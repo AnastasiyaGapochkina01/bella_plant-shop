@@ -54,10 +54,22 @@ pipeline {
           }
           steps {
             sh """
+              export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
+              export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_KEY_ID}
               terraform -chdir=${CONF_DIR} apply tfplan
-              rm -f tfplan
             """
           }
+        }
+
+        stage('Clean Workspace') {
+            steps {
+                sh """
+                    rm -f tfplan
+                    rm -f ${WORKSPACE}/ssh_key.pub
+                    unset AWS_ACCESS_KEY_ID
+                    unset AWS_SECRET_ACCESS_KEY
+                """
+            }
         }
     }
 }
