@@ -1,4 +1,4 @@
-resource "aws_key_pair" "ansible" {
-  key_name   = "ansible-ssh-key" 
-  public_key = file(var.ssh_public_key_path)
+resource "aws_key_pair" "ubuntu" {
+  key_name   = "ubuntu-ssh-key" 
+  public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMRuFuMIODUZtzVlLDe0f6ZRn1LYcTJuKgU0B6Z6rgiT ubuntu@ip-172-31-68-21"
 }
