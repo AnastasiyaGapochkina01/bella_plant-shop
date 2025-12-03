@@ -1,5 +1,5 @@
 resource "aws_instance" "server" {
-  ami           = ami-0ecb62995f68bb549
+  ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
   key_name = var.ssh_public_key_path
 
