@@ -1,0 +1,7 @@
+users:
+  - default
+  - name: jenkins
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLbv9x76oOdyJxyWnVF6lwp/hCf6dde+IuVotiPWmH4 jenkins@ip-172-31-68-21
