@@ -12,6 +12,8 @@ pipeline {
       TF_VAR_instance_name = "${params.INSTANCE_NAME}"
       TF_VAR_ssh_public_key_path = "${params.SSH_KEY_PATH}"
       AWS_REGION = 'us-west-2'
+      AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY')
+      AWS_SECRET_KEY_ID = credentials('AWS_SECRET_KEY')
     }
     
     stages {
