@@ -14,7 +14,7 @@ resource "aws_instance" "server" {
   }
 
   provisioner "local-exec" {
-    command = "cd ../ansible && ansible-playbook db.yaml -u ubuntu -i '${self.private_ip},'"
+    command = "sleep 10 && cd ../ansible && ansible-playbook -vv db.yaml -u ubuntu -i '${self.private_ip},'"
     interpreter = ["/bin/bash", "-c"]
   }
 }
