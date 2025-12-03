@@ -36,6 +36,8 @@ pipeline {
             steps {
                 script {
                     sh """
+                        export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
+                        export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_KEY_ID}
                         terraform -chdir=${CONF_DIR} init
                         terraform -chdir=${CONF_DIR} plan -var instance_type=${TF_VAR_instance_type} \
                                        -var instance_name=${TF_VAR_instance_name} \
