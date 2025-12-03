@@ -38,7 +38,7 @@ pipeline {
                     sh """
                         terraform -chdir=${CONF_DIR} init
                         terraform -chdir=${CONF_DIR} plan -var="instances.server.instance_type=${TF_VAR_instance_type}" \
-                                       -var="instances.server.name=${TF_VAR_instance_name}" \
+                                       -var="instances.server.instance_name=${TF_VAR_instance_name}" \
                                        -var="instances.server.ssh_public_key_path=${TF_VAR_ssh_public_key_path}" \
                                        -out=tfplan
                     """
