@@ -3,6 +3,7 @@ resource "aws_instance" "server" {
   instance_type = var.instance_type
   key_name = aws_key_pair.ansible.key_name
   subnet_id = var.instance_subnet
+  vpc_security_group_ids = [aws_security_group.init_sg.id]
 
   tags = {
     Name = var.instance_name
