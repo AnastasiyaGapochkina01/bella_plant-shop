@@ -14,6 +14,7 @@ pipeline {
       AWS_REGION = 'us-west-2'
       AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY')
       AWS_SECRET_KEY_ID = credentials('AWS_SECRET_KEY')
+      CONF_DIR = './terraform'
     }
     
     stages {
@@ -27,8 +28,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        terraform init
-                        terraform plan -var="instances.server.instance_type=${TF_VAR_instance_type}" \
+                        terraform -chdir=${CONF_DIR} init
+                        terraform -chdir=${CONF_DIR} plan -var="instances.server.instance_type=${TF_VAR_instance_type}" \
                                        -var="instances.server.name=${TF_VAR_instance_name}" \
                                        -var="instances.server.ssh_public_key_path=${TF_VAR_ssh_public_key_path} \
                                        -out=tfplan
@@ -43,7 +44,7 @@ pipeline {
           }
           steps {
             sh """
-              terraform apply tfplan
+              terraform -chdir=${CONF_DIR} apply tfplan
               rm -f tfplan
             """
           }
