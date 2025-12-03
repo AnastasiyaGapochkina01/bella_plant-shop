@@ -9,3 +9,9 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+variable "ssh_public_key_path" {
+  description = "Path to public SSH-key"
+  type        = string
+  default     = "~/.ssh/id_ed25519.pub"
+}
