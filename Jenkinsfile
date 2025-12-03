@@ -61,10 +61,11 @@ pipeline {
           }
         }
 
-        stage('Clean Workspace') {
-            steps {
+    post {
+        always {
+            script {
                 sh """
-                    rm -f tfplan
+                    rm -f ${WORKSPACE}/tfplan
                     rm -f ${WORKSPACE}/ssh_key.pub
                     unset AWS_ACCESS_KEY_ID
                     unset AWS_SECRET_ACCESS_KEY
