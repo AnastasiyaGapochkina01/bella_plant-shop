@@ -10,7 +10,7 @@ pipeline {
     environment {
       TF_VAR_instance_type = "${params.INSTANCE_TYPE}"
       TF_VAR_instance_name = "${params.INSTANCE_NAME}"
-      TF_VAR_ssh_public_key_path = "${params.SSH_KEY_PATH}"
+      TF_VAR_ssh_public_key_path = "${WORKSPACE}/ssh_key.pub"
       AWS_REGION = 'us-west-2'
       AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY')
       AWS_SECRET_KEY_ID = credentials('AWS_SECRET_KEY')
@@ -23,6 +23,14 @@ pipeline {
                 checkout scm
             }
         }
+
+        stage('Setup SSH Key') {
+            steps {
+                withCredentials([file(credentialsId: 'MAIN_KEY', variable: 'SSH_KEY_FILE')]) {
+                    sh 'cp $SSH_KEY_FILE $TF_VAR_ssh_public_key_path'
+                }
+            }
+        }
         
         stage('Terraform Plan') {
             steps {
@@ -31,7 +39,7 @@ pipeline {
                         terraform -chdir=${CONF_DIR} init
                         terraform -chdir=${CONF_DIR} plan -var="instances.server.instance_type=${TF_VAR_instance_type}" \
                                        -var="instances.server.name=${TF_VAR_instance_name}" \
-                                       -var="instances.server.ssh_public_key_path=${TF_VAR_ssh_public_key_path} \
+                                       -var="instances.server.ssh_public_key_path=${TF_VAR_ssh_public_key_path}" \
                                        -out=tfplan
                     """
                 }
