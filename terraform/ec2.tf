@@ -6,4 +6,9 @@ resource "aws_instance" "server" {
   tags = {
     Name = var.instance_name
   }
+
+   provisioner "local-exec" {
+     command = "cd ../ansible && ansible-playbook db.yaml -u ubuntu -i '${self.private_ip},'"
+     interpreter = ["/bin/bash", "-c"]
+   }
 }
